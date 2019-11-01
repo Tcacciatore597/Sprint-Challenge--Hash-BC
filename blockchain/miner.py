@@ -24,8 +24,10 @@ def proof_of_work(last_proof):
     start = timer()
 
     print("Searching for next proof")
-    proof = 0
+    proof = 1
     #  TODO: Your code here
+    # last_proof_string = f'{last_proof}'.encode()
+    # last_proof_hash = hashlib.sha256(last_proof_string).hexdigest()
     while valid_proof(last_proof, proof) is False:
         proof += 1
 
@@ -42,9 +44,11 @@ def valid_proof(last_hash, proof):
     """
 
     # TODO: Your code here!
-    guess = f'{last_hash}{proof}'.encode()
+    last_proof_string = f'{last_hash}'.encode()
+    last_proof_hash = hashlib.sha256(last_proof_string).hexdigest()
+    guess = f'{proof}'.encode()
     guess_hash = hashlib.sha256(guess).hexdigest()
-    return guess_hash[6:] == last_hash[:6]
+    return guess_hash[:6] == last_proof_hash[-6:]
 
 
 if __name__ == '__main__':
@@ -77,7 +81,7 @@ if __name__ == '__main__':
 
         r = requests.post(url=node + "/mine", json=post_data)
         data = r.json()
-        if data.get('message') == 'New Block Forged':
+        if data.get('message') == None:
             coins_mined += 1
             print("Total coins mined: " + str(coins_mined))
         else:
